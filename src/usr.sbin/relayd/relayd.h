@@ -1073,13 +1073,13 @@ struct relayd {
 	int			 sc_snmp_flags;
 	struct event		 sc_snmpto;
 	struct event		 sc_snmpev;
-#endif
 	int			 sc_has_icmp;
 	int			 sc_has_icmp6;
 	struct ctl_icmp_event	 sc_icmp_send;
 	struct ctl_icmp_event	 sc_icmp_recv;
 	struct ctl_icmp_event	 sc_icmp6_send;
 	struct ctl_icmp_event	 sc_icmp6_recv;
+#endif
 
 	struct privsep		*sc_ps;
 	int			 sc_reload;
@@ -1218,10 +1218,12 @@ int	 relay_udp_bind(struct sockaddr_storage *, in_port_t,
 	    struct protocol *);
 void	 relay_udp_server(int, short, void *);
 
+#ifndef __FreeBSD__
 /* check_icmp.c */
 void	 icmp_init(struct relayd *);
 void	 schedule_icmp(struct relayd *, struct host *);
 void	 check_icmp(struct relayd *, struct timeval *);
+#endif
 
 /* check_tcp.c */
 void	 check_tcp(struct ctl_tcp_event *);

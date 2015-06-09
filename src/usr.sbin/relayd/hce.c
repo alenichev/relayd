@@ -63,8 +63,10 @@ hce(struct privsep *ps, struct privsep_proc *p)
 {
 	env = ps->ps_env;
 
+#ifndef __FreeBSD__
 	/* this is needed for icmp tests */
 	icmp_init(env);
+#endif
 
 	return (proc_run(ps, p, procs, nitems(procs), hce_init, NULL));
 }
@@ -124,6 +126,7 @@ hce_disable_events(void)
 			}
 		}
 	}
+#ifndef __FreeBSD__
 	if (env->sc_has_icmp) {
 		event_del(&env->sc_icmp_send.ev);
 		event_del(&env->sc_icmp_recv.ev);
@@ -132,6 +135,7 @@ hce_disable_events(void)
 		event_del(&env->sc_icmp6_send.ev);
 		event_del(&env->sc_icmp6_recv.ev);
 	}
+#endif
 }
 
 void
@@ -178,9 +182,11 @@ hce_launch_checks(int fd, short event, void *arg)
 			bcopy(&tv, &host->cte.tv_start,
 			    sizeof(host->cte.tv_start));
 			switch (table->conf.check) {
+#ifndef __FreeBSD__
 			case CHECK_ICMP:
 				schedule_icmp(env, host);
 				break;
+#endif
 			case CHECK_SCRIPT:
 				check_script(env, host);
 				break;
@@ -194,7 +200,9 @@ hce_launch_checks(int fd, short event, void *arg)
 			}
 		}
 	}
+#ifndef __FreeBSD__
 	check_icmp(env, &tv);
+#endif
 
 	bcopy(&env->sc_interval, &tv, sizeof(tv));
 	evtimer_add(&env->sc_ev, &tv);

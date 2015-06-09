@@ -12,7 +12,6 @@ SRCS=	imsg-buffer.c \
 .PATH:	${.CURDIR}
 SRCS+=	parse.y \
 	ca.c \
-	check_icmp.c \
 	check_script.c \
 	check_tcp.c \
 	config.c \
